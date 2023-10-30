@@ -95,7 +95,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
     <style>
         body {
-            background-image: url('../img/iyah1.jpg');
+            background-image: url('img/bg-cam2.jpg');
             background-size: cover;
             font-family: 'Lora', serif;
         }
@@ -103,7 +103,7 @@
             position: fixed;
             width: 100%;
             top: 0;
-            background-image: url('../img/iyah1.jpg');
+            background-image: url('img/bg-cam2.jpg');
             background-size: cover;
             padding: 15px; 
             z-index: 1000;
@@ -166,7 +166,7 @@
     <div class="header d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fs-5">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
         <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-        <span class="fs-2 text-black">Transaksi</span>
+        <span class="fs-2 text-white">TRANSAKSI</span>
         </a>
     
         <ul class="nav nav-pills align-items-center">
