@@ -208,12 +208,13 @@
                     <li><a class="dropdown-item text-black" href="det_transaksi.php">Table Detail Transaksi</a></li>
                     <li><a class="dropdown-item text-black" href="pegawai.php">Table Pegawai</a></li>
                     <li><a class="dropdown-item text-black" href="pengembalian.php">Table Pengembalian</a></li>
-                    <li><a class="dropdown-item text-black" href="#">Table Transaksi</a></li>
+                    <li><a class="dropdown-item text-black" href="transaksi.php">Table Transaksi</a></li>
                 </ul>
             </li>
         </ul>
         
     </div>
+    
     <br><br><br><br>
     
     <div class="mx-auto">
@@ -276,7 +277,7 @@
                     <div class="mb-3 row">
                         <label for="total_harga" class="col-sm-2 col-form-label">Total Harga</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="total_harga" name="total_harga" value="<?php echo $total_harga ?>" required>
+                            <input type="number" class="form-control" id="total_harga" name="total_harga" value="<?php echo $total_harga ?>" >
                         </div>
                     </div>  
                     <div class="col-12">
@@ -340,8 +341,10 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
