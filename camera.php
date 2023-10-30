@@ -27,5 +27,6 @@
         $deskripsi            = $row['deskripsi'];
 
         echo "<br>".$id_camera." ".$nama_camera." ".$harga_sewa_harian." ".$deskripsi."<br>";
+        echo "<br>".$id_camera." ".$nama_camera." ".$harga_sewa_harian." ".$deskripsi."<br>";
     }
 ?>
