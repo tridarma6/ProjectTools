@@ -12,13 +12,13 @@
         // echo "Koneksi Berhasil";
     }
 
-    $id_transaksi           = 0;
-    $id_customer            = 0;
-    $id_pegawai             = 0;
-    $tanggal_pemesanan      = "";
-    $tanggal_mulai_sewa     = "";
-    $tanggal_akhir_sewa     = "";
-    $total_harga            = 0;
+    // $id_transaksi           = 0;
+    // $id_customer            = 0;
+    // $id_pegawai             = 0;
+    // $tanggal_pemesanan      = "";
+    // $tanggal_mulai_sewa     = "";
+    // $tanggal_akhir_sewa     = "";
+    // $total_harga            = 0;
     $error                  = "";
     $sukses                 = "";
 
@@ -40,19 +40,47 @@
     }
 
     if ($op == 'edit') {
-        $id_transaksi         = $_GET['id'];
-        $sql1                 = "select * from biodata where id = '$id'";
-        $q1                   = mysqli_query($conn, $sql1);
-        $row                  = mysqli_fetch_array($q1);
-        $id_transaksi         = $row['id_transaksi'];
-        $id_customer          = $row['id_customer'];
-        $id_pegawai           = $row['id_pegawai'];
-        $tanggal_pemesanan    = $row['tanggal_pemesanan'];
-        $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
-        $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
-        $total_harga          = $row['total_harga'];
+        // Validasi id_det_transaksi dan pastikan itu adalah bilangan bulat positif
+        $id_transaksi = isset($_GET['id_transaksi']) ? intval($_GET['id_transaksi']) : 0;
 
-    
+        if ($id_transaksi <= 0) {
+            // Handle invalid or missing id_det_transaksi parameter
+            echo "Invalid or missing id_transaksi parameter.";
+        } else {
+            // Lakukan koneksi ke database (pastikan variabel $connection sudah terdefinisi)
+            $sql1 = "SELECT * FROM tb_transaksi WHERE id_transaksi = '$id_transaksi'";
+            $q1 = mysqli_query($connection, $sql1);
+
+            // Periksa apakah ada kesalahan eksekusi SQL
+            if (!$q1) {
+                echo "Error: " . mysqli_error($connection);
+                // Handle the SQL error appropriately
+            } else {
+                // Periksa apakah ada hasil dari query
+                if (mysqli_num_rows($q1) > 0) {
+                    // Ambil data dari hasil query
+                    $row = mysqli_fetch_array($q1);
+                    $id_customer          = $row['id_customer'];
+                    $id_pegawai           = $row['id_pegawai'];
+                    $tanggal_pemesanan    = $row['tanggal_pemesanan'];
+                    $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
+                    $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
+                    $total_harga          = $row['total_harga'];
+
+                    // Lakukan operasi lainnya dengan data yang telah diambil
+                } else {
+                    // Handle the case when no matching record is found
+                    echo "No matching record found for id_det_transaksi: $id_transaksi";
+                }
+            }
+        }
+        // $id_transaksi         = $_GET['id_transaksi'];
+        // $sql1                 = "SELECT * FROM tb_transaksi WHERE id = '$id_transaksi'";
+        // $q1                   = mysqli_query($connection, $sql1);
+        // $row                  = mysqli_fetch_array($q1);
+        // $id_transaksi         = $row['id_transaksi'];
+        
+
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -66,14 +94,14 @@
         
         if($op == 'edit'){
             $sql            = "UPDATE tb_transaksi SET id_customer = '$id_customer', id_pegawai = '$id_pegawai', tanggal_pemesanan = '$tanggal_pemesanan', tanggal_mulai_sewa = '$tanggal_mulai_sewa', tanggal_akhir_sewa = '$tanggal_akhir_sewa', total_harga = '$total_harga' WHERE id_transaksi = '$id_transaksi'";
-            if ($conn->query($sql) === TRUE) {
+            if ($connection->query($sql) === TRUE) {
                 $sukses     = "Data baru berhasil di-update";
             } else {
                 $error      = "Data baru gagal di-update";
             }
         }else{
             $sql            = "INSERT INTO tb_transaksi (id_customer, id_pegawai, tanggal_pemesanan, tanggal_mulai_sewa, tanggal_akhir_sewa, total_harga) VALUES ('$id_customer', '$id_pegawai', '$tanggal_pemesanan', '$tanggal_mulai_sewa', '$tanggal_akhir_sewa', '$total_harga')";
-            if ($conn->query($sql) === TRUE) {
+            if ($connection->query($sql) === TRUE) {
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";
@@ -248,7 +276,7 @@
                     <div class="mb-3 row">
                         <label for="total_harga" class="col-sm-2 col-form-label">Total Harga</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="total_harga" name="total_harga" value="<?php echo $total_harga ?>" required>
+                            <input type="number" class="form-control" id="total_harga" name="total_harga" value="<?php echo $total_harga ?>" required>
                         </div>
                     </div>  
                     <div class="col-12">
@@ -297,8 +325,8 @@
                                         <td scope="row"><?php echo $tanggal_akhir_sewa ?></td>
                                         <td scope="row"><?php echo $total_harga ?></td>
                                         <td scope="row">
-                                            <a href="index3.php?op=edit&id=<?php echo $id ?>"><button type="button" class="btn btn-warning">Edit</button></a>
-                                            <a href="index3.php?op=delete&id=<?php echo $id?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>
+                                            <a href="transaksi.php?op=edit&id_transaksi=<?php echo $id_transaksi ?>"><button type="button" class="btn btn-warning">Edit</button></a>
+                                            <a href="transaksi.php?op=delete&id_transaksi=<?php echo $id_transaksi?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>
                                         </td>
 
                                     </tr>
