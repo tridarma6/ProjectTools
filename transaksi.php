@@ -139,7 +139,7 @@
                     $tanggal_pemesanan    = $row['tanggal_pemesanan'];
                     $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
                     $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
-                    $total_harga          = $row['total_harga'];
+
 
                     // Lakukan operasi lainnya dengan data yang telah diambil
                 } else {
@@ -169,15 +169,12 @@
                 $error      = "Data baru gagal ditambahkan";
             } else {
                  // Periksa apakah ada hasil dari query
-                if (mysqli_num_rows($q4) > 0) {
+                if (mysqli_num_rows($q1) > 0) {
                     // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q4);
-                    $id_customer          = $row['id_customer'];
-                    $id_pegawai           = $row['id_pegawai'];
+                    $row = mysqli_fetch_array($q1);
                     $tanggal_pemesanan    = $row['tanggal_pemesanan'];
                     $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
                     $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
-                    $total_harga          = $row['total_harga'];
 
                     // Lakukan operasi lainnya dengan data yang telah diambil
                 } else {
@@ -186,6 +183,28 @@
                 }
                 $sukses     = "Data baru berhasil ditambahkan";
             }
+        }
+    }
+
+    $sql_customer = "SELECT id_customer FROM tb_customer";
+    $result_customer = $connection->query($sql_customer);
+
+    // Simpan data id_customer dalam array
+    $id_customer_options = array();
+    if ($result_customer->num_rows > 0) {
+        while ($row = $result_customer->fetch_assoc()) {
+            $id_customer_options[] = $row['id_customer'];
+        }
+    }
+
+    $sql_pegawai = "SELECT id_pegawai FROM tb_pegawai";
+    $result_pegawai = $connection->query($sql_pegawai);
+
+    // Simpan data id_pegawai dalam array
+    $id_pegawai_options = array();
+    if ($result_pegawai->num_rows > 0) {
+        while ($row = $result_pegawai->fetch_assoc()) {
+            $id_pegawai_options[] = $row['id_pegawai'];
         }
     }
 ?>
@@ -326,16 +345,36 @@
                 }
                 ?>
                 <form action="" method="post">
-                    <div class="mb-3 row">
+                <div class="mb-3 row">
                         <label for="id_customer" class="col-sm-2 col-form-label">ID Customer</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="id_customer" name="id_customer" value="<?php echo $id_customer ?>" required>
+                            <select name="id_customer" id="id_Customer" class="form-control">
+                                <option value="">--Pilih ID customer--</option>
+                                <?php
+
+                                    foreach($id_customer_options as $option){
+                                        $selected = ($id_customer == $option)? "selected" : "";
+                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    }
+                                ?>
+                            </select>
+                            <a href="customer.php">Create New</a>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="id_pegawai" class="col-sm-2 col-form-label">ID Pegawai</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="id_pegawai" name="id_pegawai" value="<?php echo $id_pegawai ?>" required>
+                            <select name="id_pegawai" id="id_pegawai" class="form-control">
+                                <option value="">--Pilih ID Pegawai--</option>
+                                <?php
+
+                                    foreach($id_pegawai_options as $option){
+                                        $selected = ($id_pegawai == $option)? "selected" : "";
+                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    }
+                                ?>
+                            </select>
+                            <a href="pegawai.php">Create New</a>
                         </div>
                     </div>
                     <div class="mb-3 row">

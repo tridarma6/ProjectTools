@@ -154,6 +154,27 @@
         }
     }
 
+    $sql_camera = "SELECT id_camera FROM tb_camera";
+    $result_camera = $connection->query($sql_camera);
+
+    // Simpan data id_camera dalam array
+    $id_camera_options = array();
+    if ($result_camera->num_rows > 0) {
+        while ($row = $result_camera->fetch_assoc()) {
+            $id_camera_options[] = $row['id_camera'];
+        }
+    }
+    
+    $sql_transaksi = "SELECT id_transaksi FROM tb_transaksi";
+    $result_transaksi = $connection->query($sql_transaksi);
+
+    // Simpan data id_transaksi dalam array
+    $id_transaksi_options = array();
+    if ($result_transaksi->num_rows > 0) {
+        while ($row = $result_transaksi->fetch_assoc()) {
+            $id_transaksi_options[] = $row['id_transaksi'];
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -292,24 +313,39 @@
                 }
                 ?>
                 <form action="" method="post">
+                    
                     <div class="mb-3 row">
                         <label for="id_transaksi" class="col-sm-2 col-form-label">ID Transaksi</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="id_transaksi" name="id_transaksi" value="<?php echo $id_transaksi ?>" required>
+                            <select name="id_transaksi" id="id_transaksi" class="form-control">
+                                <option value="">--Pilih ID Transaksi--</option>
+                                <?php
+
+                                    foreach($id_transaksi_options as $option){
+                                        $selected = ($id_transaksi == $option)? "selected" : "";
+                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    }
+                                ?>
+                            </select>
+                            <a href="transaksi.php">Create New</a>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="id_camera" class="col-sm-2 col-form-label">ID Camera</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="id_camera" name="id_camera" value="<?php echo $id_camera ?>" required>
+                            <select name="id_camera" id="id_camera" class="form-control">
+                                <option value="">--Pilih ID Camera--</option>
+                                <?php
+
+                                    foreach($id_camera_options as $option){
+                                        $selected = ($id_camera == $option)? "selected" : "";
+                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    }
+                                ?>
+                            </select>
+                            <a href="camera.php">Create New</a>
                         </div>
                     </div>
-                    <!-- <div class="mb-3 row">
-                        <label for="jumlah_hari_sewa" class="col-sm-2 col-form-label">Jumlah Hari Sewa</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="jumlah_hari_sewa" name="jumlah_hari_sewa" value="<?php echo $jumlah_hari_sewa ?>" required>
-                        </div>
-                    </div> -->
                     <div class="col-12">
                         <input type="submit" value="Simpan Data" name="simpan" class="btn btn-primary">
                     </div>
