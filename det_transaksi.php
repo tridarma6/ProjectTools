@@ -28,9 +28,14 @@
 
     if($op == 'delete'){
         $id_det_transaksi     = $_GET['id_det_transaksi'];
-        $sql                  = "DELETE FROM tb_det_transaksi WHERE id_det_transaksi = '$id'";
-        $q1                   = mysqli_query($conn,$sql);
-        if ($conn->query($sql) === TRUE) {
+        $id_transaksi         = $_GET['id_transaksi'];
+        $sql                  = "DELETE FROM tb_det_transaksi WHERE id_det_transaksi = '$id_det_transaksi'";
+        $sql2                 = "UPDATE tb_transaksi
+                                 INNER JOIN tb_det_transaksi ON tb_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                 SET tb_transaksi.`total_harga` = tb_transaksi.`total_harga` - tb_det_transaksi.`harga_sewa`
+                                 WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`";
+        $q1                   = mysqli_query($connection,$sql);
+        if ($connection->query($sql) === TRUE && $connection->query($sql2) === TRUE) {
             $sukses = "Data berhasil dihapus";
         } else {
             $error = "Data gagal dihapus";
@@ -47,18 +52,38 @@
             echo "Invalid or missing id_det_transaksi parameter.";
         } else {
             // Lakukan koneksi ke database (pastikan variabel $connection sudah terdefinisi)
-            $sql1 = "SELECT * FROM tb_det_transaksi WHERE id_det_transaksi = '$id_det_transaksi'";
+
+            $sql1           = " UPDATE tb_det_transaksi
+                                JOIN tb_transaksi ON tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                SET tb_det_transaksi.`jumlah_hari_sewa` = DATEDIFF(tb_transaksi.`tanggal_akhir_sewa`, tb_transaksi.`tanggal_mulai_sewa`)"; 
+
+            $sql2           = " UPDATE tb_det_transaksi
+                                JOIN tb_camera ON tb_det_transaksi.`id_camera` = tb_camera.`id_camera`
+                                SET tb_det_transaksi.`harga_sewa` = tb_camera.`harga_sewa_harian` * tb_det_transaksi.`jumlah_hari_sewa`";
+
+            $sql3           = " UPDATE tb_transaksi
+                                SET total_harga = (
+                                SELECT SUM(harga_sewa)
+                                FROM tb_det_transaksi
+                                WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                );";
+
+
+            $sql4           = " SELECT * FROM tb_det_transaksi WHERE id_det_transaksi = '$id_det_transaksi'";
             $q1 = mysqli_query($connection, $sql1);
+            $q2 = mysqli_query($connection, $sql2);
+            $q3 = mysqli_query($connection, $sql3);
+            $q4 = mysqli_query($connection, $sql4);
 
             // Periksa apakah ada kesalahan eksekusi SQL
-            if (!$q1) {
+            if (!$q1 && !$q2 && !$q3 && !$q4) {
                 echo "Error: " . mysqli_error($connection);
                 // Handle the SQL error appropriately
             } else {
                 // Periksa apakah ada hasil dari query
-                if (mysqli_num_rows($q1) > 0) {
+                if (mysqli_num_rows($q4) > 0) {
                     // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q1);
+                    $row = mysqli_fetch_array($q4);
                     $id_transaksi = $row['id_transaksi'];
                     $id_camera = $row['id_camera'];
                     $jumlah_hari_sewa = $row['jumlah_hari_sewa'];
@@ -76,22 +101,52 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $id_det_transaksi     = $_POST['id_det_transaksi'];
         $id_transaksi         = $_POST['id_transaksi'];
         $id_camera            = $_POST['id_camera'];
-        $jumlah_hari_sewa     = $_POST['jumlah_hari_sewa'];
-        $harga_sewa           = $_POST['harga_sewa'];
         
         if($op == 'edit'){
-            $sql            = "UPDATE tb_det_transaksi SET id_transaksi = '$id_transaksi', id_camera = '$id_camera', jumlah_hari_sewa = '$jumlah_hari_sewa', harga_sewa = '$harga_sewa' WHERE id_det_transaksi = '$id_det_transaksi'";
-            if ($connection->query($sql) === TRUE) {
+            $sql            = " UPDATE tb_det_transaksi 
+                                SET id_transaksi = '$id_transaksi', id_camera = '$id_camera', jumlah_hari_sewa = '$jumlah_hari_sewa' 
+                                WHERE id_det_transaksi = '$id_det_transaksi'";
+
+            $sql2           = " UPDATE tb_det_transaksi
+                                JOIN tb_transaksi ON tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                SET tb_det_transaksi.`jumlah_hari_sewa` = DATEDIFF(tb_transaksi.`tanggal_akhir_sewa`, tb_transaksi.`tanggal_mulai_sewa`)"; 
+
+            $sql3           = " UPDATE tb_det_transaksi
+                                JOIN tb_camera ON tb_det_transaksi.`id_camera` = tb_camera.`id_camera`
+                                SET tb_det_transaksi.`harga_sewa` = tb_camera.`harga_sewa_harian` * tb_det_transaksi.`jumlah_hari_sewa`";
+
+            $sql4           = " UPDATE tb_transaksi
+                                SET total_harga = (
+                                SELECT SUM(harga_sewa)
+                                FROM tb_det_transaksi
+                                WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                );";
+            if ($connection->query($sql) === TRUE && $connection->query($sql2) === TRUE && $connection->query($sql3) === TRUE && $connection->query($sql4) === TRUE) {
                 $sukses     = "Data baru berhasil di-update";
             } else {
                 $error      = "Data baru gagal di-update";
             }
         }else{
-            $sql            = "INSERT INTO tb_det_transaksi (id_transaksi, id_camera, jumlah_hari_sewa, harga_sewa) VALUES ('$id_transaksi', '$id_camera', '$tanggal_pemesanan', '$harga_sewa')";
-            if ($connection->query($sql) === TRUE) {
+            $sql            = "INSERT INTO tb_det_transaksi (id_transaksi, id_camera) 
+                                VALUES ('$id_transaksi', '$id_camera')";
+
+            $sql2           = "UPDATE tb_det_transaksi
+                                JOIN tb_transaksi ON tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                SET tb_det_transaksi.`jumlah_hari_sewa` = DATEDIFF(tb_transaksi.`tanggal_akhir_sewa`, tb_transaksi.`tanggal_mulai_sewa`)";  
+
+            $sql3           = "UPDATE tb_det_transaksi
+                                JOIN tb_camera ON tb_det_transaksi.`id_camera` = tb_camera.`id_camera`
+                                SET tb_det_transaksi.`harga_sewa` = tb_camera.`harga_sewa_harian` * tb_det_transaksi.`jumlah_hari_sewa`";
+
+            $sql4           = "UPDATE tb_transaksi
+                                SET total_harga = (
+                                SELECT SUM(harga_sewa)
+                                FROM tb_det_transaksi
+                                WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                );";
+            if ($connection->query($sql) === TRUE && $connection->query($sql2) === TRUE && $connection->query($sql3) === TRUE && $connection->query($sql4) === TRUE) {
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";
@@ -219,6 +274,7 @@
                 ?>
                     <div class="alert alert-danger" role="alert">
                         <?php echo $error ?>
+                        <a href="det_transaksi.php">Back</a>
                     </div>
                 <?php
                     
@@ -229,6 +285,7 @@
                 ?>
                     <div class="alert alert-success" role="alert">
                         <?php echo $sukses ?>
+                        <a href="det_transaksi.php">Back</a>
                     </div>
                 <?php
                     
@@ -247,18 +304,12 @@
                             <input type="number" class="form-control" id="id_camera" name="id_camera" value="<?php echo $id_camera ?>" required>
                         </div>
                     </div>
-                    <div class="mb-3 row">
+                    <!-- <div class="mb-3 row">
                         <label for="jumlah_hari_sewa" class="col-sm-2 col-form-label">Jumlah Hari Sewa</label>
                         <div class="col-sm-10">
                             <input type="number" class="form-control" id="jumlah_hari_sewa" name="jumlah_hari_sewa" value="<?php echo $jumlah_hari_sewa ?>" required>
                         </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="harga_sewa" class="col-sm-2 col-form-label">Harga Sewa</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="harga_sewa" name="harga_sewa" value="<?php echo $harga_sewa ?>" required>
-                        </div>
-                    </div> 
+                    </div> -->
                     <div class="col-12">
                         <input type="submit" value="Simpan Data" name="simpan" class="btn btn-primary">
                     </div>
@@ -267,7 +318,7 @@
         </div>
         <div class="card">
             <div class="card-header text-white bg-secondary">
-                DATA TRANSAKSI
+                DATA DETAIL TRANSAKSI
             </div>
             <div class="card-body">
                 <table class="table">
@@ -278,6 +329,7 @@
                             <th scope="col">ID Camera</th>
                             <th scope="col">Jumlah Hari Sewa</th>
                             <th scope="col">Harga Sewa</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -294,13 +346,13 @@
                                     ?>
                                     <tr>
                                         <td scope="row"><?php echo $id_det_transaksi ?></td>
-                                        <td scope="row"><?php echo $id_transaksi ?></td>
-                                        <td scope="row"><?php echo $id_camera ?></td>
+                                        <td scope="row"><a href="transaksi.php"><?php echo $id_transaksi ?></a></td>
+                                        <td scope="row"><a href="camera.php"><?php echo $id_camera ?></a></td>
                                         <td scope="row"><?php echo $jumlah_hari_sewa ?></td>
-                                        <td scope="row"><?php echo $harga_sewa ?></td>
+                                        <td scope="row"><?php echo "Rp ".$harga_sewa ?></td>
                                         <td scope="row">
                                             <a href="det_transaksi.php?op=edit&id_det_transaksi=<?php echo $id_det_transaksi ?>"><button type="button" class="btn btn-warning">Edit</button></a>
-                                            <a href="det_transaksi.php?op=delete&id_det_transaksi=<?php echo $id_det_transaksi?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>
+                                            <a href="det_transaksi.php?op=delete&id_det_transaksi=<?php echo $id_det_transaksi?>&id_transaksi=<?php echo $id_transaksi?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>
                                         </td>
                                     </tr>
                                     <?php

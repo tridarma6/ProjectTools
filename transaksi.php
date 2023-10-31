@@ -30,9 +30,9 @@
 
     if($op == 'delete'){
         $id_transaksi         = $_GET['id_transaksi'];
-        $sql                  = "DELETE FROM tb_transaksi WHERE id_transaksi = '$id'";
-        $q1                   = mysqli_query($conn,$sql);
-        if ($conn->query($sql) === TRUE) {
+        $sql                  = "DELETE FROM tb_transaksi WHERE id_transaksi = '$id_transaksi'";
+        $q1                   = mysqli_query($connection,$sql);
+        if ($connection->query($sql) === TRUE) {
             $sukses = "Data berhasil dihapus";
         } else {
             $error = "Data gagal dihapus";
@@ -48,18 +48,37 @@
             echo "Invalid or missing id_transaksi parameter.";
         } else {
             // Lakukan koneksi ke database (pastikan variabel $connection sudah terdefinisi)
-            $sql1 = "SELECT * FROM tb_transaksi WHERE id_transaksi = '$id_transaksi'";
+            $sql1           = " UPDATE tb_det_transaksi
+                                JOIN tb_transaksi ON tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                SET tb_det_transaksi.`jumlah_hari_sewa` = DATEDIFF(tb_transaksi.`tanggal_akhir_sewa`, tb_transaksi.`tanggal_mulai_sewa`)"; 
+
+            $sql2           = " UPDATE tb_det_transaksi
+                                JOIN tb_camera ON tb_det_transaksi.`id_camera` = tb_camera.`id_camera`
+                                SET tb_det_transaksi.`harga_sewa` = tb_camera.`harga_sewa_harian` * tb_det_transaksi.`jumlah_hari_sewa`";
+
+            $sql3           = " UPDATE tb_transaksi
+                                SET total_harga = (
+                                SELECT SUM(harga_sewa)
+                                FROM tb_det_transaksi
+                                WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                );";
+            
+            $sql4           = " SELECT * FROM tb_transaksi WHERE id_transaksi = '$id_transaksi'";
             $q1 = mysqli_query($connection, $sql1);
+            $q2 = mysqli_query($connection, $sql2);
+            $q3 = mysqli_query($connection, $sql3);
+            $q4 = mysqli_query($connection, $sql4);
+
 
             // Periksa apakah ada kesalahan eksekusi SQL
-            if (!$q1) {
+            if (!$q1 && !$q2 && !$q3 && !$q4) {
                 echo "Error: " . mysqli_error($connection);
                 // Handle the SQL error appropriately
             } else {
                 // Periksa apakah ada hasil dari query
-                if (mysqli_num_rows($q1) > 0) {
+                if (mysqli_num_rows($q4) > 0) {
                     // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q1);
+                    $row = mysqli_fetch_array($q4);
                     $id_customer          = $row['id_customer'];
                     $id_pegawai           = $row['id_pegawai'];
                     $tanggal_pemesanan    = $row['tanggal_pemesanan'];
@@ -84,27 +103,88 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $id_transaksi           = $_POST['id_transaksi'];
         $id_customer            = $_POST['id_customer'];
         $id_pegawai             = $_POST['id_pegawai'];
         $tanggal_pemesanan      = $_POST['tanggal_pemesanan'];
         $tanggal_mulai_sewa     = $_POST['tanggal_mulai_sewa'];
         $tanggal_akhir_sewa     = $_POST['tanggal_akhir_sewa'];
-        $total_harga            = $_POST['total_harga'];
         
         if($op == 'edit'){
-            $sql            = "UPDATE tb_transaksi SET id_customer = '$id_customer', id_pegawai = '$id_pegawai', tanggal_pemesanan = '$tanggal_pemesanan', tanggal_mulai_sewa = '$tanggal_mulai_sewa', tanggal_akhir_sewa = '$tanggal_akhir_sewa', total_harga = '$total_harga' WHERE id_transaksi = '$id_transaksi'";
-            if ($connection->query($sql) === TRUE) {
-                $sukses     = "Data baru berhasil di-update";
-            } else {
+            $sql            = " UPDATE tb_transaksi 
+                                SET id_customer = '$id_customer', id_pegawai = '$id_pegawai', tanggal_pemesanan = '$tanggal_pemesanan', tanggal_mulai_sewa = '$tanggal_mulai_sewa', tanggal_akhir_sewa = '$tanggal_akhir_sewa' 
+                                WHERE id_transaksi = '$id_transaksi';";
+
+            $sql2           = " UPDATE tb_det_transaksi
+                                JOIN tb_camera ON tb_det_transaksi.`id_camera` = tb_camera.`id_camera`
+                                SET tb_det_transaksi.`harga_sewa` = tb_camera.`harga_sewa_harian` * tb_det_transaksi.`jumlah_hari_sewa`";
+
+            $sql3           = " UPDATE tb_transaksi
+                                SET total_harga = (
+                                SELECT SUM(harga_sewa)
+                                FROM tb_det_transaksi
+                                WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                );";
+            $q1 = $connection->query($sql);
+            $q2 = $connection->query($sql2);
+            $q3 = $connection->query($sql3);
+            if (!$q1 && !$q2 && !$q3) {
                 $error      = "Data baru gagal di-update";
+            } else {
+                // Periksa apakah ada hasil dari query
+                if (mysqli_num_rows($q4) > 0) {
+                    // Ambil data dari hasil query
+                    $row = mysqli_fetch_array($q4);
+                    $id_customer          = $row['id_customer'];
+                    $id_pegawai           = $row['id_pegawai'];
+                    $tanggal_pemesanan    = $row['tanggal_pemesanan'];
+                    $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
+                    $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
+                    $total_harga          = $row['total_harga'];
+
+                    // Lakukan operasi lainnya dengan data yang telah diambil
+                } else {
+                    // Handle the case when no matching record is found
+                    echo "No matching record found for id_det_transaksi: $id_transaksi";
+                }
+                $sukses     = "Data baru berhasil di-update";
             }
         }else{
-            $sql            = "INSERT INTO tb_transaksi (id_customer, id_pegawai, tanggal_pemesanan, tanggal_mulai_sewa, tanggal_akhir_sewa, total_harga) VALUES ('$id_customer', '$id_pegawai', '$tanggal_pemesanan', '$tanggal_mulai_sewa', '$tanggal_akhir_sewa', '$total_harga')";
-            if ($connection->query($sql) === TRUE) {
-                $sukses     = "Data baru berhasil ditambahkan";
-            } else {
+            $sql            = " INSERT INTO tb_transaksi (id_customer, id_pegawai, tanggal_pemesanan, tanggal_mulai_sewa, tanggal_akhir_sewa) 
+                                VALUES ('$id_customer', '$id_pegawai', '$tanggal_pemesanan', '$tanggal_mulai_sewa', '$tanggal_akhir_sewa');";
+
+            $sql2           = " UPDATE tb_det_transaksi
+                                JOIN tb_camera ON tb_det_transaksi.`id_camera` = tb_camera.`id_camera`
+                                SET tb_det_transaksi.`harga_sewa` = tb_camera.`harga_sewa_harian` * tb_det_transaksi.`jumlah_hari_sewa`";
+
+            $sql3           = " UPDATE tb_transaksi
+                                SET total_harga = (
+                                SELECT SUM(harga_sewa)
+                                FROM tb_det_transaksi
+                                WHERE tb_det_transaksi.`id_transaksi` = tb_transaksi.`id_transaksi`
+                                );";
+            $q1 = $connection->query($sql);
+            $q2 = $connection->query($sql2);
+            $q3 = $connection->query($sql3);
+            if (!$q1 && !$q2 && !$q3) {
                 $error      = "Data baru gagal ditambahkan";
+            } else {
+                 // Periksa apakah ada hasil dari query
+                if (mysqli_num_rows($q4) > 0) {
+                    // Ambil data dari hasil query
+                    $row = mysqli_fetch_array($q4);
+                    $id_customer          = $row['id_customer'];
+                    $id_pegawai           = $row['id_pegawai'];
+                    $tanggal_pemesanan    = $row['tanggal_pemesanan'];
+                    $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
+                    $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
+                    $total_harga          = $row['total_harga'];
+
+                    // Lakukan operasi lainnya dengan data yang telah diambil
+                } else {
+                    // Handle the case when no matching record is found
+                    echo "No matching record found for id_det_transaksi: $id_transaksi";
+                }
+                $sukses     = "Data baru berhasil ditambahkan";
             }
         }
     }
@@ -228,6 +308,7 @@
                 ?>
                     <div class="alert alert-danger" role="alert">
                         <?php echo $error ?>
+                        <a href="transaksi.php">Back</a>
                     </div>
                 <?php
                     
@@ -238,6 +319,7 @@
                 ?>
                     <div class="alert alert-success" role="alert">
                         <?php echo $sukses ?>
+                        <a href="transaksi.php">Back</a>
                     </div>
                 <?php
                     
@@ -274,12 +356,6 @@
                             <input type="date" class="form-control" id="tanggal_akhir_sewa" name="tanggal_akhir_sewa" value="<?php echo $tanggal_akhir_sewa ?>" required>
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="total_harga" class="col-sm-2 col-form-label">Total Harga</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="total_harga" name="total_harga" value="<?php echo $total_harga ?>" >
-                        </div>
-                    </div>  
                     <div class="col-12">
                         <input type="submit" value="Simpan Data" name="simpan" class="btn btn-primary">
                     </div>
@@ -301,6 +377,7 @@
                             <th scope="col">Mulai Sewa</th>
                             <th scope="col">Akhir Sewa</th>
                             <th scope="col">Total Harga</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -319,15 +396,16 @@
                                     ?>
                                     <tr>
                                         <td scope="row"><?php echo $id_transaksi ?></td>
-                                        <td scope="row"><?php echo $id_customer ?></td>
-                                        <td scope="row"><?php echo $id_pegawai ?></td>
+                                        <td scope="row"><a href="customer.php"><?php echo $id_customer ?></a></td>
+                                        <td scope="row"><a  href="pegawai.php"><?php echo $id_pegawai ?></a></td>
                                         <td scope="row"><?php echo $tanggal_pemesanan ?></td>
                                         <td scope="row"><?php echo $tanggal_mulai_sewa ?></td>
                                         <td scope="row"><?php echo $tanggal_akhir_sewa ?></td>
-                                        <td scope="row"><?php echo $total_harga ?></td>
+                                        <td scope="row"><?php echo "Rp ".$total_harga ?></td>
                                         <td scope="row">
                                             <a href="transaksi.php?op=edit&id_transaksi=<?php echo $id_transaksi ?>"><button type="button" class="btn btn-warning">Edit</button></a>
                                             <a href="transaksi.php?op=delete&id_transaksi=<?php echo $id_transaksi?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>
+                                            <a href="transaksi.php"><button type="button" class="btn btn-primary">R</button></a>
                                         </td>
 
                                     </tr>
