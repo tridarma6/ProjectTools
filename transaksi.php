@@ -9,7 +9,7 @@
     if($connection->connect_error){
         die("Koneksi gagal").$connection->connect_error;
     }else{
-        // echo "Koneksi Berhasil";
+        echo "Koneksi Berhasil";
     }
 
     // $id_transaksi           = 0;
