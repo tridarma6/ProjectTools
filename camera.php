@@ -11,7 +11,8 @@
     }else{
         echo "Koneksi Berhasil";
     }
-
+    $nama_camera            = "";
+    $deskripsi              = "";
     $error                  = "";
     $sukses                 = "";
 
@@ -22,9 +23,9 @@
     }
 
     if($op == 'delete'){
-        $id_camera     = $_GET['id_camera'];
-        $nama_camera         = $_GET['nama_camera'];
-        $deskripsi      = $_GET['deskripsi'];
+        $id_camera            = $_GET['id_camera'];
+        $nama_camera          = $_GET['nama_camera'];
+        $deskripsi            = $_GET['deskripsi'];
         $sql                  = "DELETE FROM tb_camera WHERE id_camera = '$id_camera'";
 
         $q1                   = mysqli_query($connection,$sql);
@@ -59,10 +60,10 @@
                 // Periksa apakah ada hasil dari query
                 if (mysqli_num_rows($q4) > 0) {
                     // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q4);
-                    $nama_camera = $row['nama_camera'];
+                    $row               = mysqli_fetch_array($q4);
+                    $nama_camera       = $row['nama_camera'];
                     $harga_sewa_harian = $row['harga_sewa_harian'];
-                    $deskripsi = $row['deskripsi'];
+                    $deskripsi         = $row['deskripsi'];
 
                     // Lakukan operasi lainnya dengan data yang telah diambil
                 } else {
@@ -76,8 +77,8 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nama_camera         = $_POST['nama_camera'];
-        $harga_sewa_harian            = $_POST['harga_sewa_harian'];
+        $nama_camera          = $_POST['nama_camera'];
+        $harga_sewa_harian    = $_POST['harga_sewa_harian'];
         $deskripsi            = $_POST['deskripsi'];
         
         if($op == 'edit'){
