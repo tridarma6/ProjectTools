@@ -382,7 +382,7 @@
                                     ?>
                                     <tr>
                                         <td scope="row"><?php echo $id_det_transaksi ?></td>
-                                        <td scope="row"><a href="transaksi.php"><?php echo $id_transaksi ?></a></td>
+                                        <td scope="row"><a href="transaksi.php?op=show&id_transaksi=<?php echo $id_transaksi ?>"><?php echo $id_transaksi ?></a></td>
                                         <td scope="row"><a href="camera.php"><?php echo $id_camera ?></a></td>
                                         <td scope="row"><?php echo $jumlah_hari_sewa ?></td>
                                         <td scope="row"><?php echo "Rp ".$harga_sewa ?></td>
