@@ -40,7 +40,7 @@
         }
     }
     if($op == 'show'){
-        $id_transaksi       = $_GET['id_transaksi'];
+        $id_transaksi      = $_GET['id_transaksi'];
         $sql               = "SELECT * FROM tb_transaksi
                               WHERE id_transaksi = '$id_transaksi';";
         $q1                = mysqli_query($connection, $sql);
