@@ -36,18 +36,14 @@
         }
     }
 
-    if ($op == 'edit') {
-                
+    if ($op == 'edit') {  
         // Validasi id_customer dan pastikan itu adalah bilangan bulat positif
         $id_customer = isset($_GET['id_customer']) ? intval($_GET['id_customer']) : 0;
-
         if ($id_customer <= 0) {
             // Handle invalid or missing id_customer parameter
             echo "Invalid or missing id_customer parameter.";
         } else {
             // Lakukan koneksi ke database (pastikan variabel $connection sudah terdefinisi)
-
-
             $sql4           = " SELECT * FROM tb_customer WHERE id_customer = '$id_customer'";
             $q4 = mysqli_query($connection, $sql4);
 
@@ -59,13 +55,12 @@
                 // Periksa apakah ada hasil dari query
                 if (mysqli_num_rows($q4) > 0) {
                     // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q4);
-                    $id_customer = $row['id_customer'];
-                    $nama_customer = $row['nama_customer'];
-                    $email = $row['email'];
-                    $alamat = $row['alamat'];
-                    $nomor_telepon = $row['nomor_telepon'];
-
+                    $row                = mysqli_fetch_array($q4);
+                    $id_customer        = $row['id_customer'];
+                    $nama_customer      = $row['nama_customer'];
+                    $email              = $row['email'];
+                    $alamat             = $row['alamat'];
+                    $nomor_telepon      = $row['nomor_telepon'];
                     // Lakukan operasi lainnya dengan data yang telah diambil
                 } else {
                     // Handle the case when no matching record is found
@@ -85,9 +80,8 @@
         
         if($op == 'edit'){
             $sql            = " UPDATE tb_customer 
-                                SET nama_customer = '$nama_customer', email = '$email', alamat = '$alamat', nomor_telepon = '$nomor_telepon';
+                                SET nama_customer = '$nama_customer', email = '$email', alamat = '$alamat', nomor_telepon = '$nomor_telepon'
                                 WHERE id_customer = '$id_customer'";
-
             if ($connection->query($sql) === TRUE) {
                 $sukses     = "Data baru berhasil di-update";
             } else {
@@ -100,10 +94,9 @@
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";
-            }
         }
     }
-
+}
     
 ?>
 
