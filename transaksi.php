@@ -21,6 +21,7 @@
     // $total_harga            = 0;
     $error                  = "";
     $sukses                 = "";
+    $show                   = "";
 
     if(isset($_GET['op'])){
         $op = $_GET['op'];
@@ -38,7 +39,33 @@
             $error = "Data gagal dihapus";
         }
     }
+    if($op == 'show'){
+        $id_transaksi      = $_GET['id_transaksi'];
+        $sql               = "SELECT * FROM tb_transaksi
+                              WHERE id_transaksi = '$id_transaksi';";
+        $q1                = mysqli_query($connection, $sql);
+        if($q1){
+            if (mysqli_num_rows($q1) > 0) {
+                // Ambil data dari hasil query
+                $row = mysqli_fetch_array($q1);
+                $id_transaksi         = $row['id_transaksi'];
+                $id_customer          = $row['id_customer'];
+                $id_pegawai           = $row['id_pegawai'];
+                $tanggal_pemesanan    = $row['tanggal_pemesanan'];
+                $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
+                $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
+                $total_harga          = $row['total_harga'];
 
+                // Lakukan operasi lainnya dengan data yang telah diambil
+            } else {
+                // Handle the case when no matching record is found
+                echo "No matching record found for id_transaksi: $id_transaksi";
+            }
+            $show          = "show";               
+        }else{
+            $show          = "dontshow";
+        }
+    }
     if ($op == 'edit') {
         // Validasi id_det_transaksi dan pastikan itu adalah bilangan bulat positif
         $id_transaksi = isset($_GET['id_transaksi']) ? intval($_GET['id_transaksi']) : 0;
@@ -315,6 +342,68 @@
     </div>
     
     <br><br><br><br>
+    <?php 
+    if($show == "show"){
+    ?>
+
+    <div class="mx-auto">
+        <div class="card">
+            <div class="card-header">
+                SHOW DATA
+            </div>
+            <div class="card-body">
+                <div class="mb-3 row">
+                    <label for="id_transaksi" class="col-sm-2 col-form-label">ID Transaksi</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="id_transaksi" name="id_transaksi" value="<?php echo $id_transaksi ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="id_customer" class="col-sm-2 col-form-label">ID Customer</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="id_customer" name="id_customer" value="<?php echo $id_customer ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="id_pegawai" class="col-sm-2 col-form-label">ID Pegawai</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="id_pegawai" name="id_pegawai" value="<?php echo $id_pegawai ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="tanggal_pemesanan" class="col-sm-2 col-form-label">Tanggal Pemesanan</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" value="<?php echo $tanggal_pemesanan ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="tanggal_mulai_sewa" class="col-sm-2 col-form-label">Tanggal Mulai Sewa</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control" id="tanggal_mulai_sewa" name="tanggal_mulai_sewa" value="<?php echo $tanggal_mulai_sewa ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="tanggal_akhir_sewa" class="col-sm-2 col-form-label">Tanggal Akhir Sewa</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control" id="tanggal_akhir_sewa" name="tanggal_akhir_sewa" value="<?php echo $tanggal_akhir_sewa ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="total_harga" class="col-sm-2 col-form-label">Total Harga</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="total_harga" name="total_harga" value="<?php echo $total_harga ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <a href="det_transaksi.php"><button type="button" class="btn btn-primary">Back</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php
+    }
+    ?>
     
     <div class="mx-auto">
         <div class="card">
@@ -435,7 +524,7 @@
                                     ?>
                                     <tr>
                                         <td scope="row"><?php echo $id_transaksi ?></td>
-                                        <td scope="row"><a href="customer.php"><?php echo $id_customer ?></a></td>
+                                        <td scope="row"><a href="customer.php?op=show&id_customer=<?php echo $id_customer ?>"><?php echo $id_customer ?></a></td>
                                         <td scope="row"><a  href="pegawai.php"><?php echo $id_pegawai ?></a></td>
                                         <td scope="row"><?php echo $tanggal_pemesanan ?></td>
                                         <td scope="row"><?php echo $tanggal_mulai_sewa ?></td>

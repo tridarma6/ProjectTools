@@ -74,14 +74,15 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nama_customer         = $_POST['nama_customer'];
-        $email                 = $_POST['email'];
         $alamat                = $_POST['alamat'];
+        $email                 = $_POST['email'];
         $nomor_telepon         = $_POST['nomor_telepon'];
         
         if($op == 'edit'){
             $sql            = " UPDATE tb_customer 
                                 SET nama_customer = '$nama_customer', email = '$email', alamat = '$alamat', nomor_telepon = '$nomor_telepon'
                                 WHERE id_customer = '$id_customer'";
+
             if ($connection->query($sql) === TRUE) {
                 $sukses     = "Data baru berhasil di-update";
             } else {
@@ -89,14 +90,14 @@
             }
         }else{
             $sql            = "INSERT INTO tb_customer (nama_customer, email, alamat, nomor_telepon)
-                                VALUES ('$nama_customer', '$email', '$alamat', '$nomor_telepon')";
+                                VALUES ('$nama_customer', '$email', '$alamat', '$nomor_telepon');";
             if ($connection->query($sql) === TRUE) {
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";
+            }
         }
     }
-}
     
 ?>
 

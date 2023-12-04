@@ -11,9 +11,11 @@
     }else{
         echo "Koneksi Berhasil";
     }
-
+    $nama_camera            = "";
+    $deskripsi              = "";
     $error                  = "";
     $sukses                 = "";
+    $show                   = "";
 
     if(isset($_GET['op'])){
         $op = $_GET['op'];
@@ -22,9 +24,9 @@
     }
 
     if($op == 'delete'){
-        $id_camera     = $_GET['id_camera'];
-        $nama_camera         = $_GET['nama_camera'];
-        $deskripsi      = $_GET['deskripsi'];
+        $id_camera            = $_GET['id_camera'];
+        $nama_camera          = $_GET['nama_camera'];
+        $deskripsi            = $_GET['deskripsi'];
         $sql                  = "DELETE FROM tb_camera WHERE id_camera = '$id_camera'";
 
         $q1                   = mysqli_query($connection,$sql);
@@ -35,6 +37,30 @@
         }
     }
 
+    if($op == 'show'){
+        $id_camera         = $_GET['id_camera'];
+        $sql               = "SELECT * FROM tb_camera
+                              WHERE $id_camera = '$id_camera';";
+        $q1                = mysqli_query($connection, $sql);
+        if($q1){
+            if (mysqli_num_rows($q1) > 0) {
+                // Ambil data dari hasil query
+                $row = mysqli_fetch_array($q1);
+                $id_camera            = $row['id_camera'];
+                $nama_camera          = $row['nama_camera'];
+                $harga_sewa_harian    = $row['harga_sewa_harian'];
+                $deskripsi            = $row['deskripsi'];
+                
+                // Lakukan operasi lainnya dengan data yang telah diambil
+            } else {
+                // Handle the case when no matching record is found
+                echo "No matching record found for id_camera: $id_camera";
+            }
+            $show          = "show";               
+        }else{
+            $show          = "dontshow";
+        }
+    }
     if ($op == 'edit') {
                 
         // Validasi id_camera dan pastikan itu adalah bilangan bulat positif
@@ -59,10 +85,10 @@
                 // Periksa apakah ada hasil dari query
                 if (mysqli_num_rows($q4) > 0) {
                     // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q4);
-                    $nama_camera = $row['nama_camera'];
+                    $row               = mysqli_fetch_array($q4);
+                    $nama_camera       = $row['nama_camera'];
                     $harga_sewa_harian = $row['harga_sewa_harian'];
-                    $deskripsi = $row['deskripsi'];
+                    $deskripsi         = $row['deskripsi'];
 
                     // Lakukan operasi lainnya dengan data yang telah diambil
                 } else {
@@ -76,8 +102,8 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nama_camera         = $_POST['nama_camera'];
-        $harga_sewa_harian            = $_POST['harga_sewa_harian'];
+        $nama_camera          = $_POST['nama_camera'];
+        $harga_sewa_harian    = $_POST['harga_sewa_harian'];
         $deskripsi            = $_POST['deskripsi'];
         
         if($op == 'edit'){
@@ -210,7 +236,50 @@
         
     </div>
     <br><br><br><br>
-    
+    <?php 
+    if($show == "show"){
+    ?>
+
+    <div class="mx-auto">
+        <div class="card">
+            <div class="card-header">
+                SHOW DATA
+            </div>
+            <div class="card-body">
+                <div class="mb-3 row">
+                    <label for="id_camera" class="col-sm-2 col-form-label">ID Camera</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="id_camera" name="id_camera" value="<?php echo $id_camera ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="nama_camera" class="col-sm-2 col-form-label">Nama Camera</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="nama_camera" name="nama_camera" value="<?php echo $nama_camera ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="harga_sewa_harian" class="col-sm-2 col-form-label">Harga Sewa Harian</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="harga_sewa_harian" name="harga_sewa_harian" value="<?php echo $harga_sewa_harian ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="deskripsi" class="col-sm-2 col-form-label">Deskripsi</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="deskripsi" name="deskripsi" value="<?php echo $deskripsi ?>" readonly>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <a href="det_transaksi.php"><button type="button" class="btn btn-primary">Back</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php
+    }
+    ?>
     <div class="mx-auto">
         <div class="card">
             <div class="card-header">
