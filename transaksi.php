@@ -195,19 +195,6 @@
             if (!$q1 && !$q2 && !$q3) {
                 $error      = "Data baru gagal ditambahkan";
             } else {
-                 // Periksa apakah ada hasil dari query
-                if (mysqli_num_rows($q1) > 0) {
-                    // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q1);
-                    $tanggal_pemesanan    = $row['tanggal_pemesanan'];
-                    $tanggal_mulai_sewa   = $row['tanggal_mulai_sewa'];
-                    $tanggal_akhir_sewa   = $row['tanggal_akhir_sewa'];
-
-                    // Lakukan operasi lainnya dengan data yang telah diambil
-                } else {
-                    // Handle the case when no matching record is found
-                    echo "No matching record found for id_det_transaksi: $id_transaksi";
-                }
                 $sukses     = "Data baru berhasil ditambahkan";
             }
         }
