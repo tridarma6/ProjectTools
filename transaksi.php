@@ -417,9 +417,8 @@
                 if ($sukses) {
                 ?>
                     <div class="alert alert-success" role="alert">
-                        <?php echo $sukses ?>
-                        <a href="det_transaksi.php">Go to Detail Transaksi, pick the bigest id transaksi</a>
-
+                        <!-- <?php echo $sukses ?> -->
+                        <a href="det_transaksi.php">---Berhasil. Go to Detail Transaksi, pick the bigest id transaksi</a>
                     </div>
                 <?php
                     
@@ -519,7 +518,7 @@
                                         <td scope="row"><?php echo $tanggal_pemesanan ?></td>
                                         <td scope="row"><?php echo $tanggal_mulai_sewa ?></td>
                                         <td scope="row"><?php echo $tanggal_akhir_sewa ?></td>
-                                        <td scope="row"><?php echo "Rp".$total_harga ?></td>
+                                        <td scope="row"><?php echo "Rp ".$total_harga ?></td>
                                         <td scope="row">
                                             <a href="transaksi.php?op=edit&id_transaksi=<?php echo $id_transaksi ?>"><button type="button" class="btn btn-warning">Edit</button></a>
                                             <a href="transaksi.php?op=delete&id_transaksi=<?php echo $id_transaksi?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>

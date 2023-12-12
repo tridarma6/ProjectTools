@@ -128,7 +128,7 @@
                                 WHERE id_pengembalian = '$id_pengembalian'";
             $q1             = $connection->query($sql);
             $q2           = $connection->query($sql2);
-            if ($$q1 && $q2) {
+            if ($q1 && $q2) {
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";
