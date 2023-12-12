@@ -5,4 +5,3 @@
     $db         = "db_camera";
 
     $connection = new mysqli($host, $username, $password, $db);
-?>

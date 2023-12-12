@@ -1,3 +1,7 @@
+<?php
+    require "session.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +11,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     <style>
-        body {
+            .body {
             margin: 0;
             padding: 0;
             background: #90caf9 ;
