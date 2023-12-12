@@ -25,10 +25,7 @@
 
     if($op == 'delete'){
         $id_camera            = $_GET['id_camera'];
-        $nama_camera          = $_GET['nama_camera'];
-        $deskripsi            = $_GET['deskripsi'];
         $sql                  = "DELETE FROM tb_camera WHERE id_camera = '$id_camera'";
-
         $q1                   = mysqli_query($connection,$sql);
         if ($connection->query($sql) === TRUE) {
             $sukses = "Data berhasil dihapus";
@@ -97,10 +94,7 @@
                 }
             }
         }
-
-
     }
-
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nama_camera          = $_POST['nama_camera'];
         $harga_sewa_harian    = $_POST['harga_sewa_harian'];

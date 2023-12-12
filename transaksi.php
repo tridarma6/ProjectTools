@@ -200,25 +200,29 @@
         }
     }
 
-    $sql_customer = "SELECT id_customer FROM tb_customer";
+    $sql_customer = "SELECT id_customer, nama_customer FROM tb_customer";
     $result_customer = $connection->query($sql_customer);
 
-    // Simpan data id_customer dalam array
+    // Simpan data nama_customer dalam array
     $id_customer_options = array();
+    $nama_customer_options = array();
     if ($result_customer->num_rows > 0) {
         while ($row = $result_customer->fetch_assoc()) {
             $id_customer_options[] = $row['id_customer'];
+            $nama_customer_options[] = $row['nama_customer'];
         }
     }
 
-    $sql_pegawai = "SELECT id_pegawai FROM tb_pegawai";
+    $sql_pegawai = "SELECT id_pegawai, nama_pegawai FROM tb_pegawai";
     $result_pegawai = $connection->query($sql_pegawai);
 
-    // Simpan data id_pegawai dalam array
+    // Simpan data nama_pegawai dalam array
     $id_pegawai_options = array();
+    $nama_pegawai_options = array();
     if ($result_pegawai->num_rows > 0) {
         while ($row = $result_pegawai->fetch_assoc()) {
             $id_pegawai_options[] = $row['id_pegawai'];
+            $nama_pegawai_options[] = $row['nama_pegawai'];
         }
     }
 ?>
@@ -414,7 +418,8 @@
                 ?>
                     <div class="alert alert-success" role="alert">
                         <?php echo $sukses ?>
-                        <a href="transaksi.php">Back</a>
+                        <a href="det_transaksi.php">Go to Detail Transaksi, pick the bigest id transaksi</a>
+
                     </div>
                 <?php
                     
@@ -422,15 +427,14 @@
                 ?>
                 <form action="" method="post">
                 <div class="mb-3 row">
-                        <label for="id_customer" class="col-sm-2 col-form-label">ID Customer</label>
+                        <label for="id_customer" class="col-sm-2 col-form-label">Nama Customer</label>
                         <div class="col-sm-10">
                             <select name="id_customer" id="id_Customer" class="form-control">
-                                <option value="">--Pilih ID customer--</option>
+                                <option value="">--Pilih Nama customer--</option>
                                 <?php
 
-                                    foreach($id_customer_options as $option){
-                                        $selected = ($id_customer == $option)? "selected" : "";
-                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    for($i = 0; $i < count($id_customer_options); $i++){
+                                        echo "<option value=\"$id_customer_options[$i]\" $selected>$nama_customer_options[$i]</option>";
                                     }
                                 ?>
                             </select>
@@ -438,15 +442,14 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="id_pegawai" class="col-sm-2 col-form-label">ID Pegawai</label>
+                        <label for="id_pegawai" class="col-sm-2 col-form-label">Nama Pegawai</label>
                         <div class="col-sm-10">
                             <select name="id_pegawai" id="id_pegawai" class="form-control">
-                                <option value="">--Pilih ID Pegawai--</option>
+                                <option value="">--Pilih Nama Pegawai--</option>
                                 <?php
 
-                                    foreach($id_pegawai_options as $option){
-                                        $selected = ($id_pegawai == $option)? "selected" : "";
-                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    for($i = 0; $i < count($id_pegawai_options); $i++){
+                                        echo "<option value=\"$id_pegawai_options[$i]\" $selected>$nama_pegawai_options[$i]</option>";
                                     }
                                 ?>
                             </select>
@@ -516,11 +519,10 @@
                                         <td scope="row"><?php echo $tanggal_pemesanan ?></td>
                                         <td scope="row"><?php echo $tanggal_mulai_sewa ?></td>
                                         <td scope="row"><?php echo $tanggal_akhir_sewa ?></td>
-                                        <td scope="row"><?php echo "Rp ".$total_harga ?></td>
+                                        <td scope="row"><?php echo "Rp".$total_harga ?></td>
                                         <td scope="row">
                                             <a href="transaksi.php?op=edit&id_transaksi=<?php echo $id_transaksi ?>"><button type="button" class="btn btn-warning">Edit</button></a>
                                             <a href="transaksi.php?op=delete&id_transaksi=<?php echo $id_transaksi?>" onclick="return confirm('Apakah anda yakin ingin menghapus data?')"><button type="button" class="btn btn-danger">Delete</button></a>
-                                            <a href="transaksi.php"><button type="button" class="btn btn-primary">R</button></a>
                                         </td>
 
                                     </tr>

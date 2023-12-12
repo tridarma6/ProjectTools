@@ -180,6 +180,9 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+        .loginbtn{
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>

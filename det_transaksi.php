@@ -154,14 +154,16 @@
         }
     }
 
-    $sql_camera = "SELECT id_camera FROM tb_camera";
+    $sql_camera = "SELECT id_camera, nama_camera FROM tb_camera";
     $result_camera = $connection->query($sql_camera);
 
     // Simpan data id_camera dalam array
+    $nama_camera_options = array();
     $id_camera_options = array();
     if ($result_camera->num_rows > 0) {
         while ($row = $result_camera->fetch_assoc()) {
             $id_camera_options[] = $row['id_camera'];
+            $nama_camera_options[] = $row['nama_camera'];
         }
     }
     
@@ -320,7 +322,6 @@
                             <select name="id_transaksi" id="id_transaksi" class="form-control">
                                 <option value="">--Pilih ID Transaksi--</option>
                                 <?php
-
                                     foreach($id_transaksi_options as $option){
                                         $selected = ($id_transaksi == $option)? "selected" : "";
                                         echo "<option value=\"$option\" $selected>$option</option>";
@@ -334,12 +335,11 @@
                         <label for="id_camera" class="col-sm-2 col-form-label">ID Camera</label>
                         <div class="col-sm-10">
                             <select name="id_camera" id="id_camera" class="form-control">
-                                <option value="">--Pilih ID Camera--</option>
+                                <option value="">--Pilih Nama Camera--</option>
                                 <?php
 
-                                    foreach($id_camera_options as $option){
-                                        $selected = ($id_camera == $option)? "selected" : "";
-                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    for($i = 0; $i < count($id_camera_options); $i++){
+                                        echo "<option value=\"$id_camera_options[$i]\" $selected>$nama_camera_options[$i]</option>";
                                     }
                                 ?>
                             </select>

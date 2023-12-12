@@ -98,19 +98,6 @@
                                 VALUES ('$nama_pegawai', '$email', '$alamat', '$nomor_telepon')";
             $q1             = $connection->query($sql);
             if ($q1) {
-                if (mysqli_num_rows($q1) > 0) {
-                    // Ambil data dari hasil query
-                    $row = mysqli_fetch_array($q1);
-                    $nama_pegawai    = $row['nama_pegawai'];
-                    $email   = $row['email'];
-                    $alamat   = $row['alamat'];
-                    $nomor_telepon   = $row['nomor_telepon'];
-
-                    // Lakukan operasi lainnya dengan data yang telah diambil
-                } else {
-                    // Handle the case when no matching record is found
-                    echo "No matching record found for id_det_transaksi: $id_pegawai";
-                }
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";

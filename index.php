@@ -68,55 +68,17 @@
             color: black;
             padding: 5px 0;
             }
-            .box-login input {
-            padding: 5px 5px;
-            background: none;
-            border: none;
-            outline: none;
-            color: white;
-            font-size: 18px;
-            }
-            .box-login select{
-                padding: 5px 100px;
-                margin: 0 10px;
-                color: white;
-                background-color: black;
-            }
             .box-login input::placeholder {
             color: white;
             }
-            .btn-login
-            .box-login input:hover{
-            background: rgba(10, 10, 10,s 0.5);
+            .nav{
+                margin: 0 90px;
             }
-            .btn-login {
-            margin-left: 10px;
-            margin-bottom: 20px;
-            background: none;
-            border: 1px solid white;
-            width: 92.5%;
-            padding: 10px;
-            color: white;
-            font-size: 18px;
-            letter-spacing: 3px;
-            cursor: pointer;
+            .box-login a li{
+                margin: 0 90px;
             }
-            .btn-login:hover{
-            background: rgba(12, 30, 15, 0.5);
-            }
-            .bottom {
-            margin-left: 10px;
-            margin-right: 10px;
-            display: flex;
-            justify-content: space-between;
-            }
-            .bottom a {
-            color: white;
-            font-size: 15px;
-            text-decoration: none;
-            }
-            .bottom a:hover {
-            text-decoration: underline;
+            .nav-item{
+                transform: scale(1.2);
             }
     </style>
 </head>
@@ -128,31 +90,30 @@
                 <i class="fa fa-user"></i>
             </div>
 
-            <h2>Login Form</h2>
+            <h2>Admin Section</h2>
 
             <div class="box-login">
-                <i class="fas fa-envelope-open-text"></i>
-                <select id="userRole">
-                    <option value="admin">Admin</option>
-                    <option value="customer">Customer</option>
-                </select>
+                <ul class="nav nav-pills align-items-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active bg-black dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tables Data
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item text-black" href="camera.php">Table Camera</a></li>
+                            <li><a class="dropdown-item text-black" href="customer.php">Table Customer</a></li>
+                            <li><a class="dropdown-item text-black" href="det_transaksi.php">Table Detail Transaksi</a></li>
+                            <li><a class="dropdown-item text-black" href="pegawai.php">Table Pegawai</a></li>
+                            <li><a class="dropdown-item text-black" href="pengembalian.php">Table Pengembalian</a></li>
+                            <li><a class="dropdown-item text-black" href="transaksi.php">Table Transaksi</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
 
-            <button type="button" name="login" class="btn-login" onclick="redirectToRole()">Login</button>
         </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function redirectToRole() {
-            var selectedRole = document.getElementById("userRole").value;
-            if (selectedRole === "admin") {
-                window.location.href = "admin.php"; 
-            } else if (selectedRole === "customer") {
-                window.location.href = "client.php"; 
-            }
-        }
-    </script>
 </body>
 </html>

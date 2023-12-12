@@ -12,6 +12,7 @@
         echo "Koneksi Berhasil";
     }
     $id_transaksi           = "";
+    $id_pengembalian        = "";
     $tanggal_pengembalian   = "";
     $denda                  = "";
     $error                  = "";
@@ -26,24 +27,20 @@
 
     if($op == 'delete'){
         $id_pengembalian         = $_GET['id_pengembalian'];
-        $id_transaksi            = $_GET['id_transaksi'];
-        $tanggal_pengembalian    = $_GET['tanggal_pengembalian'];
-        $denda                   = $_GET['denda'];
-        $sql                     = "DELETE FROM tb_camera WHERE id_pengembalian = '$id_pengembalian'";
-
-        $q1                   = mysqli_query($connection,$sql);
-        if ($connection->query($sql) === TRUE) {
-            $sukses = "Data berhasil dihapus";
-        } else {
+        $sql                     = "DELETE FROM tb_pengembalian WHERE id_pengembalian = '$id_pengembalian'";
+        $q1                      = mysqli_query($connection, $sql);
+        if(!$q1) {
             $error = "Data gagal dihapus";
+        } else {
+            $sukses = "Data berhasil dihapus";
         }
     }
 
     if($op == 'show'){
         $id_pengembalian         = $_GET['id_pengembalian'];
-        $sql               = "SELECT * FROM tb_pengembalian
-                              WHERE $id_pengembalian = '$id_pengembalian';";
-        $q1                = mysqli_query($connection, $sql);
+        $sql                     = "SELECT * FROM tb_pengembalian
+                                    WHERE $id_pengembalian = '$id_pengembalian';";
+        $q1                      = mysqli_query($connection, $sql);
         if($q1){
             if (mysqli_num_rows($q1) > 0) {
                 // Ambil data dari hasil query
@@ -51,7 +48,6 @@
                 $id_pengembalian       = $row['id_pengembalian'];
                 $id_transaksi          = $row['id_transaksi'];
                 $tanggal_pengembalian  = $row['tanggal_pengembalian'];
-                $denda                 = $row['denda'];
                 
                 // Lakukan operasi lainnya dengan data yang telah diambil
             } else {
@@ -74,13 +70,16 @@
         } else {
             // Lakukan koneksi ke database (pastikan variabel $connection sudah terdefinisi)
 
+            $sql            = "UPDATE tb_pengembalian
+                                JOIN tb_transaksi ON tb_transaksi.id_transaksi = tb_pengembalian.id_transaksi
+                                SET tb_pengembalian.denda = DATEDIFF(tb_pengembalian.tanggal_pengembalian, tb_transaksi.tanggal_akhir_sewa) * 20000
+                                WHERE id_pengembalian = '$id_pengembalian'";
+            $sql4           = " SELECT * FROM tb_pengembalian WHERE id_pengembalian = '$id_pengembalian'";
 
-            $sql4           = " SELECT * FROM tb_camera WHERE id_pengembalian = '$id_pengembalian'";
-
+            $q = mysqli_query($connection, $sql);
             $q4 = mysqli_query($connection, $sql4);
-
             // Periksa apakah ada kesalahan eksekusi SQL
-            if (!$q4) {
+            if (!$q4 && !$q) {
                 echo "Error: " . mysqli_error($connection);
                 // Handle the SQL error appropriately
             } else {
@@ -90,8 +89,6 @@
                     $row                  = mysqli_fetch_array($q4);
                     $id_transaksi         = $row['id_transaksi'];
                     $tanggal_pengembalian = $row['tanggal_pengembalian'];
-                    $denda                = $row['denda'];
-
                     // Lakukan operasi lainnya dengan data yang telah diambil
                 } else {
                     // Handle the case when no matching record is found
@@ -106,14 +103,18 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id_transaksi           = $_POST['id_transaksi'];
         $tanggal_pengembalian   = $_POST['tanggal_pengembalian'];
-        $denda                  = $_POST['denda'];
         
         if($op == 'edit'){
             $sql            = " UPDATE tb_pengembalian
                                 SET id_transaksi = '$id_transaksi', tanggal_pengembalian = '$tanggal_pengembalian', denda = '$denda' 
-                                WHERE id_camera = '$id_camera'";
-
-            if ($connection->query($sql) === TRUE) {
+                                WHERE id_pengembalian = '$id_pengembalian'";
+            $sql2            = "UPDATE tb_pengembalian
+                                JOIN tb_transaksi ON tb_transaksi.id_transaksi = tb_pengembalian.id_transaksi
+                                SET tb_pengembalian.denda = DATEDIFF(tb_pengembalian.tanggal_pengembalian, tb_transaksi.tanggal_akhir_sewa) * 20000
+                                WHERE id_pengembalian = '$id_pengembalian'";
+            $q1             = $connection->query($sql);
+            $q2           = $connection->query($sql2);
+            if ($q1 && $q2) {
                 $sukses     = "Data baru berhasil di-update";
             } else {
                 $error      = "Data baru gagal di-update";
@@ -121,20 +122,33 @@
         }else{
             $sql            = "INSERT INTO tb_pengembalian (id_transaksi, tanggal_pengembalian, denda) 
                                 VALUES ('$id_transaksi', '$tanggal_pengembalian', '$denda')";
-
-            if ($connection->query($sql) === TRUE) {
+            $sql2            = "UPDATE tb_pengembalian
+                                JOIN tb_transaksi ON tb_transaksi.id_transaksi = tb_pengembalian.id_transaksi
+                                SET tb_pengembalian.denda = DATEDIFF(tb_pengembalian.tanggal_pengembalian, tb_transaksi.tanggal_akhir_sewa) * 20000
+                                WHERE id_pengembalian = '$id_pengembalian'";
+            $q1             = $connection->query($sql);
+            $q2           = $connection->query($sql2);
+            if ($$q1 && $q2) {
                 $sukses     = "Data baru berhasil ditambahkan";
             } else {
                 $error      = "Data baru gagal ditambahkan";
             }
         }
     }
+    $sql_transaksi = "SELECT id_transaksi FROM tb_transaksi";
+    $result_transaksi = $connection->query($sql_transaksi);
 
+    // Simpan data id_transaksi dalam array
+    $nama_transaksi_options = array();
+    if ($result_transaksi->num_rows > 0) {
+        while ($row = $result_transaksi->fetch_assoc()) {
+            $nama_transaksi_options[] = $row['id_transaksi'];
+        }
+    }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -315,19 +329,21 @@
                     <div class="mb-3 row">
                         <label for="id_transaksi" class="col-sm-2 col-form-label">ID Transaksi</label>
                         <div class="col-sm-10">
-                            <input type="number" name="id_transaksi" id="id_transaksi" value="<?php echo $id_transaksi ?>" required>
+                            <select name="id_transaksi" id="id_transaksi" class="form-control">
+                                <option value="">--Pilih ID Transaksi--</option>
+                                <?php
+                                    foreach($nama_transaksi_options as $option){
+                                        $selected = ($id_transaksi == $option)? "selected" : "";
+                                        echo "<option value=\"$option\" $selected>$option</option>";
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="tanggal_pengembalian" class="col-sm-2 col-form-label">Tanggal Pengembalian</label>
                         <div class="col-sm-10">
                             <input type="date" name="tanggal_pengembalian" id="tanggal_pengembalian" value="<?php echo $tanggal_pengembalian ?>" required>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="denda" class="col-sm-2 col-form-label">Denda</label>
-                        <div class="col-sm-10">
-                            <input type="number" name="denda" id="denda" value="<?php echo $denda ?>" required>
                         </div>
                     </div>
                     <div class="col-12">
