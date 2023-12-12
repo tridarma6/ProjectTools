@@ -87,7 +87,7 @@
                 <i class="fa fa-user"></i>
             </div>
 
-            <h2>Client Section</h2>
+            <h2>Admin Section</h2>
 
             <div class="box-login">
                 <ul class="nav nav-pills align-items-center">

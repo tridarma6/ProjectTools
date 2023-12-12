@@ -125,55 +125,47 @@
             <div class="avatar">
                 <i class="fa fa-user"></i>
             </div>
-            <h2>Login Form</h2>
+            <h2>Register Form</h2>
             <div class="box-login">
                 <i class="fas fa-envelope-open-text"></i>
-                <input type="text" placeholder="Username" name="username" id="username">
+                <input type="text" placeholder="Username" name="username" id="username" required>
+            </div>
+            <div class="box-login">
+                <i class="fas fa-envelope-open-text"></i>
+                <input type="text" placeholder="Email" name="email" id="email" required>
             </div>
             <div class="box-login">
                 <i class="fas fa-lock"></i>
-                <input type="password" placeholder="Password" name="password" id="username">
+                <input type="password" placeholder="Password" name="password" id="username" required>
             </div>
-            <button type="submit" name="loginbtn" class="btn-login">Login</button>
+            <button type="submit" name="regisbtn" class="btn-login">Register</button>
             <div class="bottom">
-                <a href="register.php">Register</a>
+                <a href="login.php">Login</a>
             </div>
         </form>
         <div class="mt-3" style="width: 500px">
             <?php
-                if(isset($_POST['loginbtn'])){
+                if(isset($_POST['regisbtn'])){
                     $username = htmlspecialchars($_POST['username']);
                     $password = htmlspecialchars($_POST['password']);
+                    $email = htmlspecialchars($_POST['email']);
   
-                    $query = mysqli_query($connection, "SELECT * FROM users WHERE 
-                    username='$username'");
-                    $countdata = mysqli_num_rows($query);
-                    $data = mysqli_fetch_array($query);
-
-                      
-                    if($countdata>0){
-                        if (password_verify($password, $data['password'])) {
-
-                            $_SESSION['username'] = $data['username'];
-                            $_SESSION['login'] = true;
-                            header('location: admin.php');
-                        }else{
+                    $query = mysqli_query($connection, "INSERT INTO users(`username`, `password`, `email`) VALUES ('$username', '$password', '$email');");
+                    
+                    if($query){
                           ?>
-                            <div class="alert alert-danger" role="alert">
-                            Password Salah!
+                            <div class="alert alert-success" role="alert">
+                            Register Berhasil
                             </div>
                           <?php
-                        }
-                    }
-                    else{
+                    }else{
                           ?>
-                          <div class="alert alert-danger" role="alert">
-                              Data Akun tidak tersedia!
-                          </div>
+                            <div class="alert alert-danger" role="alert">
+                            Register Gagal
+                            </div>
                           <?php
                     }
                 }
-  
               ?>
           </div>
       </div>
