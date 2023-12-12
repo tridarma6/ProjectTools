@@ -25,8 +25,6 @@
 
     if($op == 'delete'){
         $id_camera            = $_GET['id_camera'];
-        $nama_camera          = $_GET['nama_camera'];
-        $deskripsi            = $_GET['deskripsi'];
         $sql                  = "DELETE FROM tb_camera WHERE id_camera = '$id_camera'";
 
         $q1                   = mysqli_query($connection,$sql);
