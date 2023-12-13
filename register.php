@@ -149,8 +149,8 @@
                     $username = htmlspecialchars($_POST['username']);
                     $password = htmlspecialchars($_POST['password']);
                     $email = htmlspecialchars($_POST['email']);
-  
-                    $query = mysqli_query($connection, "INSERT INTO users(`username`, `password`, `email`) VALUES ('$username', '$password', '$email');");
+                    $hashpass = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+                    $query = mysqli_query($connection, "INSERT INTO users(`username`, `password`, `email`) VALUES ('$username', '$hashpass', '$email');");
                     
                     if($query){
                           ?>
