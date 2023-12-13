@@ -185,6 +185,9 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+        .logout{
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -208,6 +211,7 @@
                     <li><a class="dropdown-item text-black" href="transaksi.php">Table Transaksi</a></li>
                 </ul>
             </li>
+            <a href="logout.php" class="logout nav-link active bg-black">LogOut</a>
         </ul>
         
     </div>

@@ -77,6 +77,9 @@
             .box-login a li{
                 margin: 0 90px;
             }
+            .nav{
+                transform: scale();
+            }
     </style>
 </head>
 <body>
